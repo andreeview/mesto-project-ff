@@ -1,8 +1,4 @@
-const placesCardsContainer = document.querySelector('.places__list');
-
-let placesCard;
-
-function createCard(arrayItem, handler) {
+function createCard(arrayItem, handleLike, handleClose) {
 
     const cardTemplate = document.querySelector('#card-template').content;
     const cardElement = cardTemplate.querySelector('.places__item').cloneNode(true);
@@ -16,19 +12,21 @@ function createCard(arrayItem, handler) {
     cardImage.src = arrayItem.link;
     cardImage.alt = `Фотография места: ${cardTitle.textContent}`;
 
-    cardDeleteButton.addEventListener('click', () => {
-        handler(cardElement);
-    });
+    cardDeleteButton.addEventListener('click', () => handleClose(cardElement));
+
+    const cardLikeButton = cardElement.querySelector('.card__like-button')
+
+    cardLikeButton.addEventListener('click', () => handleLike(cardLikeButton));
     
-    placesCard = cardElement;
-    return placesCard;
+    return cardElement;
+}
+
+function likeCard(likeButton) {
+    likeButton.classList.toggle('card__like-button_is-active')
 }
 
 function deleteCard(card) {
     card.remove();
 }
 
-initialCards.forEach(function addCard(element) {
-    createCard(element, deleteCard);
-    placesCardsContainer.append(placesCard);
-})
+export { createCard, likeCard, deleteCard };
