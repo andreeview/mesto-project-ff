@@ -1,43 +1,22 @@
-function turnOnPopup(popup, openButton) {
-    openButton.addEventListener('click', () => openPopup(popup))
-
-    const closeButton = popup.querySelector('.popup__close');
-
-    addListenersToClose(popup, closeButton)
-}
-
-function addListenersToClose(popup, button) {
-
-    button.addEventListener('click', () => closePopup())
-    popup.addEventListener('click', evt => handleOverlayClose(evt))
-    document.addEventListener('keydown', evt => handleEscapeClose(evt))
-}
-
 function openPopup(popup) {
     popup.classList.add('popup_is-opened')
-}
-
-function openImage(popup, openButton, title) {
-    const openedImage = popup.querySelector('.popup__image')
-    const openedImageTitle = popup.querySelector('.popup__caption')
-
-    openButton.addEventListener('click', (evt) => {
-        openedImage.src = evt.target.src;
-        openedImage.alt = evt.target.alt;
-        openedImageTitle.textContent = title.textContent
-        openPopup(popup)
-    })
 
     const closeButton = popup.querySelector('.popup__close');
 
-    addListenersToClose(popup, closeButton)
+    closeButton.addEventListener('click', closePopup)
+    popup.addEventListener('click', handleOverlayClose)
+    document.addEventListener('keydown', handleEscapeClose)
 }
 
 function closePopup() {
     const openedPopup = document.querySelector('.popup_is-opened')
+    const closeButton = openedPopup.querySelector('.popup__close');
 
     if (openedPopup) {
+        closeButton.removeEventListener('click', closePopup)
+        openedPopup.removeEventListener('click', handleOverlayClose)
         openedPopup.classList.remove('popup_is-opened')
+        document.removeEventListener('keydown', handleEscapeClose)
     }
 }
 
@@ -53,4 +32,4 @@ function handleEscapeClose(evt) {
     }
 }
 
-export { openImage, turnOnPopup, closePopup, openPopup };
+export { closePopup, openPopup };
