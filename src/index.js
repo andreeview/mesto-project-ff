@@ -1,7 +1,19 @@
 import './pages/index.css'
 import { initialCards } from './components/cards'
-import { createCard, likeCard, openImage, deleteCard } from './components/card'
+import { createCard, likeCard, deleteCard } from './components/card'
 import { closePopup, openPopup  } from './components/modal'
+
+const popupTypeImage = document.querySelector('.popup_type_image')
+const openedImage = popupTypeImage.querySelector('.popup__image')
+const openedImageTitle = popupTypeImage.querySelector('.popup__caption')
+
+function openImage(item) {
+        openedImage.src = item.link
+        openedImage.alt = `Фотография места: ${item.name}`
+        openedImageTitle.textContent = item.name
+
+        openPopup(popupTypeImage)
+}
 
 const placesCardsContainer = document.querySelector('.places__list')
 
