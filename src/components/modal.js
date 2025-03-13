@@ -8,7 +8,7 @@ function openPopup(popup) {
     document.addEventListener('keydown', handleEscapeClose)
 }
 
-function closePopup() {
+function closePopup () {
     const openedPopup = document.querySelector('.popup_is-opened')
     const closeButton = openedPopup.querySelector('.popup__close');
 
@@ -20,13 +20,13 @@ function closePopup() {
     }
 }
 
-function handleOverlayClose(evt) {
+function handleOverlayClose (evt) {
     if (evt.currentTarget === evt.target) {
         closePopup()
     }
 }
 
-function handleEscapeClose(evt) {
+function handleEscapeClose (evt) {
     if (evt.key === 'Escape') {
         closePopup()
     }
