@@ -35,16 +35,17 @@ function createCard (arrayItem, userId, handleLike, handleImage, handleDelete) {
 function likeCard (handleApiLike, handleApiDislike) {
 
     return function (likeButton, card, likeCounter) {
-        likeButton.classList.toggle('card__like-button_is-active')
 
         if (likeButton.classList.contains('card__like-button_is-active')) {
-            handleApiLike(card)
+            handleApiDislike(card)
             .then(cardData => likeCounter.textContent = cardData.likes.length)
+            .then(() => likeButton.classList.toggle('card__like-button_is-active'))
             .catch(error => console.log(`Возникла ошибка: ${error}`))
 
         } else {
-            handleApiDislike(card)
+            handleApiLike(card)
             .then(cardData => likeCounter.textContent = cardData.likes.length)
+            .then(() => likeButton.classList.toggle('card__like-button_is-active'))
             .catch(error => console.log(`Возникла ошибка: ${error}`))
         }
     }

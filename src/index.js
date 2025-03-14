@@ -28,16 +28,19 @@ function openImage (item) {
 const popupTypeDeleteConfirm = document.querySelector('.popup_type_delete-confirm');
 
 function deleteConfirm (item, itemId) {
-    function deleteCard () {
-        item.remove();
-        apiDeleteCard(itemId);
-        closePopup();
-        deleteConfirmButton.removeEventListener('click', deleteCard)
-    }
-
-    const deleteConfirmButton = popupTypeDeleteConfirm.querySelector('.popup__button');
-    deleteConfirmButton.addEventListener('click', deleteCard)
     openPopup(popupTypeDeleteConfirm);
+    const deleteConfirmButton = popupTypeDeleteConfirm.querySelector('.popup__button');
+
+    deleteConfirmButton.onclick = () => {
+        deleteCard(item, itemId)
+    }
+}
+
+function deleteCard (item, itemId) {
+    apiDeleteCard(itemId)
+        .then(() => item.remove())
+        .then(() => closePopup())
+        .catch(error => console.log(`Возникла ошибка: ${error}`))
 }
 
 const placesCardsContainer = document.querySelector('.places__list')
@@ -89,12 +92,13 @@ function handleFormEditSubmit (evt) {
     toggleLoadState(true, submitButtonFormEditElement);
 
     nameTitle.textContent = nameInput.value;
-    profileDescription.textContent = descriptionInput.value;
     apiReplaceProfileInfo(nameInput.value, descriptionInput.value)
+        .then(() => profileDescription.textContent = descriptionInput.value)
+        .then(() => {
+            closePopup()
+        })
         .catch(error => console.log(`Возникла ошибка: ${error}`))
         .finally(() => toggleLoadState(false, submitButtonFormEditElement))
-
-    closePopup()
 }
 
 formEditElement.addEventListener('submit', handleFormEditSubmit);
@@ -113,15 +117,15 @@ function handleFormNewAvatar (evt) {
     evt.preventDefault();
     toggleLoadState(true, submitButtonFormNewAvatar)
 
-    profileImage.style['background-image'] = `url('${avatarLinkInput.value}')`;
     apiReplaceProfileImage(avatarLinkInput.value)
+        .then(() => profileImage.style['background-image'] = `url('${avatarLinkInput.value}')`)
+        .then(() => {
+            closePopup()
+            formNewAvatar.reset()
+            clearValidation(formNewAvatar, validationConfig);
+        })
         .catch(error => console.log(`Возникла ошибка: ${error}`))
         .finally(() => toggleLoadState(false, submitButtonFormNewAvatar))
-
-    formNewAvatar.reset()
-    clearValidation(formNewAvatar, validationConfig);
-
-    closePopup()
 }
 
 formNewAvatar.addEventListener('submit', handleFormNewAvatar);
@@ -144,13 +148,16 @@ function handleFormAddCardSubmit (evt) {
 
     apiAddNewCard(cardNameInput.value, cardLinkInput.value)
         .then(result => addCard(result))
+        .then(() => {
+            closePopup()
+            formAddCardElement.reset()
+            clearValidation(formAddCardElement, validationConfig);
+        })
         .catch(error => console.log(`Возникла ошибка: ${error}`))
         .finally(() => toggleLoadState(false, submitButtonFormAddCardElement))
 
     formAddCardElement.reset();
     clearValidation(formAddCardElement, validationConfig);
-
-    closePopup();
 }
 
 formAddCardElement.addEventListener('submit', handleFormAddCardSubmit);
@@ -162,5 +169,14 @@ function toggleLoadState (isPending, button) {
         button.textContent = 'Сохранить';
     }
 }
+
+const allPopups = document.querySelectorAll('.popup');
+
+allPopups.forEach((popup) => {
+    const closeButton = popup.querySelector(".popup__close")
+    closeButton.addEventListener("click", () => {
+       closePopup();
+    });
+})
 
 enableValidation(validationConfig);
