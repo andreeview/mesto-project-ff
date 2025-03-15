@@ -155,9 +155,6 @@ function handleFormAddCardSubmit (evt) {
         })
         .catch(error => console.log(`Возникла ошибка: ${error}`))
         .finally(() => toggleLoadState(false, submitButtonFormAddCardElement))
-
-    formAddCardElement.reset();
-    clearValidation(formAddCardElement, validationConfig);
 }
 
 formAddCardElement.addEventListener('submit', handleFormAddCardSubmit);
